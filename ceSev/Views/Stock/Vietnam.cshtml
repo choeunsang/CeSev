@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Home Page(CeSev v1.1)";
+}
+
+    <div class="jumbotron">
+        <h1>베트남</h1>
+        @*<button onclick="GetInfo()">경제지표 받아오기</button>*@        
+    </div>
+
+
+<script>
+
+    function test() {
+        alert('dd');
+    }
+
+    function GetInfo() {
+
+        var url = '@Url.Action("WorkSchedule", "Home")';
+        $.post(url, {}, function (data) {            
+            //alert('@ViewBag.Message');
+            alert(data.Response);
+        });        
+    } 
+
+    function GetInfo2() {
+
+        var url = '@Url.Action("WorkSchedule2", "Home")';
+        $.post(url, {}, function (data) {            
+            //alert('@ViewBag.Message');
+            alert(data.Response);
+        });        
+    }
+
+
+
+</script>

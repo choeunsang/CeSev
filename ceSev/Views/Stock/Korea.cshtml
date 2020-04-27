@@ -1,0 +1,206 @@
+﻿@{
+    ViewBag.Title = "Home Page(CeSev v1.1)";
+}
+
+
+<script src="~/js/echarts-all.js"></script>
+
+<style>
+    #divKospiGrid {
+        height: 300px;
+    }
+    /*#divChart {
+        height: 600px;
+    }*/
+
+    #divKospiChart {
+        height: 600px;
+    }
+</style>
+
+<div class="jumbotron">
+    @*<h1>한국</h1>*@@*<h1>한국</h1>*@
+
+    @*<h3>그리드 - 테스트</h3>
+    <div id="divGrid"></div>*@    
+
+    <h3>Kospi 그리드</h3>
+    <div id="divKospiGrid"></div>
+
+    @*<h3>차트 - 테스트</h3>
+    <div id="divChart"></div>*@
+
+    <h3>Kospi 차트</h3>
+    <div id="divKospiChart"></div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        //InitGrid();
+        InitKospiGrid();
+        //InitChart();
+        InitKospiChart();
+    });
+
+    function InitGrid() {
+
+        var url = '@Url.Action("GetTest", "Stock")';
+        $.post(url, {}, function (pData) {
+
+            $("#divGrid").kendoGrid({
+                columns: [
+                    //{ field: "id" },
+                    //{ field: "conT_NAME" },
+                    //{ field: "popU_CNT" },
+                    //{ field: "latitude" },
+                    //{ field: "longitude" },
+                    //{ field: "etc" }
+
+                    { field: "ID" },
+                    { field: "CONT_NAME" },
+                    { field: "POPU_CNT" },
+                    { field: "Latitude" },
+                    { field: "Longitude" },
+                    { field: "etc" }
+                ],
+                dataSource: {
+
+                    data: pData,
+                    pageSize: 20
+                }
+            });
+        });
+    }
+
+    function InitKospiGrid() {
+
+        var url = '@Url.Action("GetKospiData", "Stock")';
+        $.post(url, {}, function (pData) {
+
+            $("#divKospiGrid").kendoGrid({
+                columns: [
+                    //{ field: "id" },
+                    //{ field: "conT_NAME" },
+                    //{ field: "popU_CNT" },
+                    //{ field: "latitude" },
+                    //{ field: "longitude" },
+                    //{ field: "etc" }
+
+                    { field: "KIND" },
+                    { field: "TIME" },
+                    { field: "VALUE" },
+                    { field: "CREATE_DATE" }
+                    
+                ],
+                dataSource: {
+
+                    data: pData,
+                    //pageSize: 20
+                }
+            });
+        });
+    }
+
+    function InitChart() {
+
+        var chart = echarts.init(document.getElementById('divChart'));
+        var url = '@Url.Action("GetTest", "Stock")';
+
+        $.post(url, {}, function (pData) {
+
+            var xAxisData = [];
+            var valData = [];
+
+            $.each(pData, function (index, item) {
+
+                if (item.CONT_NAME != null) {
+                    xAxisData.push(item.CONT_NAME);
+                    valData.push(item.POPU_CNT)
+                };
+            });
+
+            chart.setOption({
+
+                xAxis: {
+                    type: 'category',
+                    data: xAxisData
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: valData,
+                    //type: 'line'
+                    type: 'bar'
+                }]
+            });
+        });
+    }
+
+    function InitKospiChart() {
+
+        var chart = echarts.init(document.getElementById('divKospiChart'));
+        var url = '@Url.Action("GetKospiData", "Stock")';
+
+        $.post(url, {}, function (pData) {
+
+            var xAxisData = [];
+            var valData = [];
+
+            $.each(pData, function (index, item) {
+
+                if (item.TIME != null) {
+                    xAxisData.push(item.TIME);
+                    valData.push(item.VALUE)
+                };
+            });
+
+            chart.setOption({
+
+                tooltip: {
+                    trigger: 'axis'
+                },
+
+                xAxis: {
+                    type: 'category',
+                    data: xAxisData
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: valData,
+                    type: 'line'
+                    //type: 'bar'
+                }]
+            });
+        });
+    }
+
+    function test() {
+        alert('dd');
+    }
+
+    function GetInfo() {
+
+        var url = '@Url.Action("WorkSchedule", "Home")';
+        $.post(url, {}, function (data) {
+            //alert('@ViewBag.Message');
+            alert(data.Response);
+        });
+    }
+
+    function GetInfo2() {
+
+        var url = '@Url.Action("WorkSchedule2", "Home")';
+        $.post(url, {}, function (data) {
+            //alert('@ViewBag.Message');
+            alert(data.Response);
+        });
+    }
+
+
+
+</script>
