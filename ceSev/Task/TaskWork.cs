@@ -310,6 +310,64 @@ namespace ceSev.Task
             }
         }
 
+
+        public void CreteKoreaData()
+        {
+            //int workCnt = GetWorkCnt();
+
+            //if (workCnt != 0)
+            //{
+            //    return;
+            //}
+
+            //CreteDataWorkHis();
+
+
+            //var newData = GetStockData();            
+            var newData = GetKoreaData("KOSDAQ");
+
+            if (newData == null)
+            {
+                return;
+            }
+
+            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
+            {
+                Console.WriteLine("\nQuery data example:");
+                Console.WriteLine("=========================================\n");
+
+                connection.Open();
+                StringBuilder sb = new StringBuilder();
+                SqlCommand cmd;
+                String sql = sb.ToString();
+
+                foreach (var item in newData)
+                {
+                    sb = new StringBuilder();
+
+                    sb.Append("INSERT INTO KOREA_INFO  ");
+                    sb.Append("(  ");
+                    sb.Append("KIND  ");
+                    sb.Append(",TIME  ");
+                    sb.Append(",VALUE  ");
+                    sb.Append(",CREATE_DATE  ");
+                    sb.Append(")  ");
+                    sb.Append("VALUES ");
+                    sb.Append("(  ");
+                    sb.Append("'" + item.KIND + "',");
+                    sb.Append("'" + item.TIME + "', ");
+                    sb.Append("'" + item.VALUE + "', ");
+                    sb.Append("'" + item.CREATE_DATE + "' ");
+                    sb.Append(")  ");
+
+                    sql = sb.ToString();
+
+                    cmd = new SqlCommand(sql, connection);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public List<StockItem> GetStockData()
         {
             List<StockItem> items = new List<StockItem>();
@@ -323,9 +381,10 @@ namespace ceSev.Task
             //요청종료건수  text Y
 
             //주가 - 코스피
-            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20191231/0001000/";
+            //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20191231/0001000/";
             //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20200101/20200331/0001000/";
-            
+            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20200401/20200431/0001000/";
+
 
             WebRequest request = HttpWebRequest.Create(strUrl);
             WebResponse response = request.GetResponse();
@@ -347,6 +406,53 @@ namespace ceSev.Task
                              KIND = "KOSPI",
                              TIME = (string)r.Element("TIME"),
                              VALUE = (string)r.Element("DATA_VALUE"),                                                          
+                             CREATE_DATE = _createDate
+                         }).ToList();
+            }
+
+            return items;
+        }
+
+        public List<StockItem> GetKoreaData(string pKind)
+        {
+            List<StockItem> items = new List<StockItem>();
+
+            //CSYPZ37CMH7K4J9XVALS
+            //서비스명 text    Y
+            //인증키 text Y
+            //요청타입 text    Y
+            //언어  text Y
+            //요청시작건수 text    Y
+            //요청종료건수  text Y
+
+            //주가 - 코스피
+            //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20191231/0001000/";
+            //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20200101/20200331/0001000/";
+
+            //코스닥
+            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20200421/0089000/";
+
+
+            WebRequest request = HttpWebRequest.Create(strUrl);
+            WebResponse response = request.GetResponse();
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            String result = reader.ReadToEnd();
+            xmlData = result.ToString();
+
+            XDocument doc = XDocument.Parse(xmlData);
+
+            if (doc.Root != null)
+            {
+                string _createDate = System.DateTime.Now.Year.ToString()
+                                  + string.Format("{0:D2}", System.DateTime.Now.Month)
+                                  + string.Format("{0:D2}", System.DateTime.Now.Day);
+
+                items = (from r in doc.Root.Elements("row")
+                         select new StockItem
+                         {
+                             KIND = pKind,
+                             TIME = (string)r.Element("TIME"),
+                             VALUE = (string)r.Element("DATA_VALUE"),
                              CREATE_DATE = _createDate
                          }).ToList();
             }

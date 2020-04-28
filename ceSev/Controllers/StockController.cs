@@ -44,6 +44,14 @@ namespace ceSev.Controllers
             return Json(list);
         }
 
+        public ActionResult GetKosdaqData(string Con, string Don)
+        {
+            InitDbSet();
+            var list = GetKosdaqData();
+
+            return Json(list);
+        }
+
         private SqlConnectionStringBuilder _builder;
 
         private void InitDbSet()
@@ -171,6 +179,64 @@ namespace ceSev.Controllers
             }
         }
 
+        private List<StockItem> GetKosdaqData()
+        {
+            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
+            {
+                //Console.WriteLine("\nQuery data example:");
+                //Console.WriteLine("=========================================\n");
+
+                connection.Open();
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append("SELECT KIND ");
+                sb.Append(", TIME ");
+                sb.Append(", VALUE ");
+                sb.Append(", CREATE_DATE ");
+
+                sb.Append("FROM KOREA_INFO ");
+                sb.Append("WHERE 1=1 ");
+                sb.Append("ORDER BY TIME ASC ");
+
+                //if ((!string.IsNullOrEmpty(pId)) && (pId != "전체"))
+                //{
+                //    sb.Append("AND ID = '" + pId + "' ");
+                //}
+
+                String sql = sb.ToString();
+                DataSet ds = new DataSet();
+                SqlDataAdapter adapter = new SqlDataAdapter();
+
+                adapter.SelectCommand = new SqlCommand(sql, connection);
+                adapter.Fill(ds);
+
+                //DataRow row = ds.Tables[0].Rows[0];
+                List<StockItem> list = new List<StockItem>();
+
+                //list.Add(new StockItem() { ID = "", etc = "전체" });
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    StockItem item = new StockItem();
+
+
+                    //sb.Append("SELECT KIND ");
+                    //sb.Append(", TIME ");
+                    //sb.Append(", VALUE ");
+                    //sb.Append(", CREATE_DATE ");
+
+                    item.KIND = row["KIND"].ToString();
+                    item.TIME = row["TIME"].ToString();
+                    item.VALUE = row["VALUE"].ToString();
+                    item.CREATE_DATE = row["CREATE_DATE"].ToString();
+
+
+                    list.Add(item);
+                }
+
+                return list;
+            }
+        }
 
         public ActionResult China()
         {

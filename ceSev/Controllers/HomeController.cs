@@ -57,6 +57,17 @@ namespace ceSev.Controllers
             return Json(new { Response = strMsg }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult WorkGetKoreaData()
+        {
+            TaskWork taskwork = new TaskWork();
+            taskwork.CreteKoreaData();
+
+            string strMsg = "WorkGetData!!";
+
+            //return View();
+            return Json(new { Response = strMsg }, JsonRequestBehavior.AllowGet);
+        }
+
         //private List<EconomicIdxItem> GetData()
         public JsonResult GetInfo()
         {

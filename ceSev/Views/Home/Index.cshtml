@@ -6,10 +6,12 @@
         <h1>CeSev</h1>
         @*<button onclick="GetInfo()">경제지표 받아오기</button>*@
         <button onclick="GetInfo2()">코스피 정보 받아오기</button>
+
+        <button onclick="GetInfo3()">한국경제 정보 받아오기</button>
     </div>
 
 
-<script>
+    <script>
 
     function test() {
         alert('dd');
@@ -18,21 +20,30 @@
     function GetInfo() {
 
         var url = '@Url.Action("WorkSchedule", "Home")';
-        $.post(url, {}, function (data) {            
+        $.post(url, {}, function (data) {
             //alert('@ViewBag.Message');
             alert(data.Response);
-        });        
-    } 
+        });
+    }
 
     function GetInfo2() {
 
         var url = '@Url.Action("WorkSchedule2", "Home")';
-        $.post(url, {}, function (data) {            
+        $.post(url, {}, function (data) {
             //alert('@ViewBag.Message');
             alert(data.Response);
-        });        
+        });
+    }
+
+    function GetInfo3() {
+
+        var url = '@Url.Action("WorkGetKoreaData", "Home")';
+        $.post(url, {}, function (data) {
+            //alert('@ViewBag.Message');
+            alert(data.Response);
+        });
     }
 
 
 
-</script>
+    </script>

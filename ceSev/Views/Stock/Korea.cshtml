@@ -6,14 +6,18 @@
 <script src="~/js/echarts-all.js"></script>
 
 <style>
-    #divKospiGrid {
+    /*#divKospiGrid {
         height: 300px;
-    }
+    }*/
     /*#divChart {
         height: 600px;
     }*/
 
     #divKospiChart {
+        height: 600px;
+    }
+
+    #divKosdaqChart {
         height: 600px;
     }
 </style>
@@ -22,16 +26,19 @@
     @*<h1>한국</h1>*@@*<h1>한국</h1>*@
 
     @*<h3>그리드 - 테스트</h3>
-    <div id="divGrid"></div>*@    
+        <div id="divGrid"></div>*@
 
-    <h3>Kospi 그리드</h3>
-    <div id="divKospiGrid"></div>
+    @*<h3>Kospi 그리드</h3>
+        <div id="divKospiGrid"></div>*@
 
     @*<h3>차트 - 테스트</h3>
-    <div id="divChart"></div>*@
+        <div id="divChart"></div>*@
 
     <h3>Kospi 차트</h3>
     <div id="divKospiChart"></div>
+
+    <h3>Kosdaq 차트</h3>
+    <div id="divKosdaqChart"></div>
 </div>
 
 
@@ -39,9 +46,11 @@
 
     $(document).ready(function () {
         //InitGrid();
-        InitKospiGrid();
+        //InitKospiGrid();
         //InitChart();
+
         InitKospiChart();
+        InitKosdaqChart();
     });
 
     function InitGrid() {
@@ -92,7 +101,7 @@
                     { field: "TIME" },
                     { field: "VALUE" },
                     { field: "CREATE_DATE" }
-                    
+
                 ],
                 dataSource: {
 
@@ -143,6 +152,46 @@
 
         var chart = echarts.init(document.getElementById('divKospiChart'));
         var url = '@Url.Action("GetKospiData", "Stock")';
+
+        $.post(url, {}, function (pData) {
+
+            var xAxisData = [];
+            var valData = [];
+
+            $.each(pData, function (index, item) {
+
+                if (item.TIME != null) {
+                    xAxisData.push(item.TIME);
+                    valData.push(item.VALUE)
+                };
+            });
+
+            chart.setOption({
+
+                tooltip: {
+                    trigger: 'axis'
+                },
+
+                xAxis: {
+                    type: 'category',
+                    data: xAxisData
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: valData,
+                    type: 'line'
+                    //type: 'bar'
+                }]
+            });
+        });
+    }
+
+    function InitKosdaqChart() {
+
+        var chart = echarts.init(document.getElementById('divKosdaqChart'));
+        var url = '@Url.Action("GetKosdaqData", "Stock")';
 
         $.post(url, {}, function (pData) {
 
