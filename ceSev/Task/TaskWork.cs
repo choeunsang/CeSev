@@ -283,6 +283,16 @@ namespace ceSev.Task
                 SqlCommand cmd;
                 String sql = sb.ToString();
 
+
+                //CLEAR - STOCK_IDX
+                sb = new StringBuilder();
+
+                sb.Append("DELETE FROM STOCK_IDX  ");
+
+                cmd = new SqlCommand(sb.ToString(), connection);
+                cmd.ExecuteNonQuery();
+
+                //INSERT
                 foreach (var item in newData)
                 {
                     sb = new StringBuilder();
@@ -331,6 +341,8 @@ namespace ceSev.Task
                 return;
             }
 
+            //CLEAR - STOCK_IDX
+
             using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
             {
                 Console.WriteLine("\nQuery data example:");
@@ -341,6 +353,15 @@ namespace ceSev.Task
                 SqlCommand cmd;
                 String sql = sb.ToString();
 
+                //CLEAR - KOREA_INFO
+                sb = new StringBuilder();
+
+                sb.Append("DELETE FROM KOREA_INFO  ");
+
+                cmd = new SqlCommand(sb.ToString(), connection);
+                cmd.ExecuteNonQuery();
+
+                //INSERT
                 foreach (var item in newData)
                 {
                     sb = new StringBuilder();
@@ -383,7 +404,15 @@ namespace ceSev.Task
             //주가 - 코스피
             //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20191231/0001000/";
             //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20200101/20200331/0001000/";
-            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20200401/20200431/0001000/";
+            //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20200401/20200431/0001000/";
+
+            
+            string fromDt = System.DateTime.Today.AddYears(-3).ToShortDateString().Replace("-", "");
+            string toDt = System.DateTime.Today.ToShortDateString().Replace("-", "");
+
+
+            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/" + fromDt  + "/" + toDt + "/0001000/";
+
 
 
             WebRequest request = HttpWebRequest.Create(strUrl);
@@ -430,8 +459,13 @@ namespace ceSev.Task
             //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20200101/20200331/0001000/";
 
             //코스닥
-            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20200421/0089000/";
+            //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20200421/0089000/";
 
+
+            string fromDt = System.DateTime.Today.AddYears(-3).ToShortDateString().Replace("-", "");
+            string toDt = System.DateTime.Today.ToShortDateString().Replace("-", "");
+
+            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/" + fromDt + "/" + toDt +  "/0089000/";
 
             WebRequest request = HttpWebRequest.Create(strUrl);
             WebResponse response = request.GetResponse();

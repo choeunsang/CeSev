@@ -46,23 +46,23 @@ namespace ceSev.Controllers
             return Json(new { Response = strMsg }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult WorkSchedule2()
+        public JsonResult GetKospi()
         {
             TaskWork taskwork = new TaskWork();
             taskwork.CreteStockData();
 
-            string strMsg = "Work Schedule2!!";
+            string strMsg = "Complete GetKospi!!";
 
             //return View();
             return Json(new { Response = strMsg }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult WorkGetKoreaData()
+        public JsonResult GetKosdaq()
         {
             TaskWork taskwork = new TaskWork();
             taskwork.CreteKoreaData();
 
-            string strMsg = "WorkGetData!!";
+            string strMsg = "Complete GetKosdaq!!";
 
             //return View();
             return Json(new { Response = strMsg }, JsonRequestBehavior.AllowGet);

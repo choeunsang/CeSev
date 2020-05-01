@@ -5,9 +5,10 @@
     <div class="jumbotron">
         <h1>CeSev</h1>
         @*<button onclick="GetInfo()">경제지표 받아오기</button>*@
-        <button onclick="GetInfo2()">코스피 정보 받아오기</button>
+        <button onclick="GetKospi()">코스피 정보 받아오기</button>
 
-        <button onclick="GetInfo3()">한국경제 정보 받아오기</button>
+        <button onclick="GetKosdaq()">코스닥 정보 받아오기</button>
+        <button onclick="GetExchange()">환율 정보 받아오기</button>
     </div>
 
 
@@ -26,24 +27,28 @@
         });
     }
 
-    function GetInfo2() {
+    function GetKospi() {
 
-        var url = '@Url.Action("WorkSchedule2", "Home")';
+        var url = '@Url.Action("GetKospi", "Home")';
         $.post(url, {}, function (data) {
             //alert('@ViewBag.Message');
             alert(data.Response);
         });
     }
 
-    function GetInfo3() {
+    function GetKosdaq() {
 
-        var url = '@Url.Action("WorkGetKoreaData", "Home")';
+        var url = '@Url.Action("GetKosdaq", "Home")';
         $.post(url, {}, function (data) {
             //alert('@ViewBag.Message');
             alert(data.Response);
         });
     }
 
+    function GetExchange() {
+
+        alert('기능 준비중');
+    }
 
 
     </script>
