@@ -47,7 +47,15 @@ namespace ceSev.Controllers
         public ActionResult GetKosdaqData(string Con, string Don)
         {
             InitDbSet();
-            var list = GetKosdaqData();
+            var list = GetKoreaData("KOSDAQ");
+
+            return Json(list);
+        }
+        
+        public ActionResult GetExchageData(string Con, string Don)
+        {
+            InitDbSet();
+            var list = GetKoreaData("EXCHANGE");
 
             return Json(list);
         }
@@ -179,7 +187,7 @@ namespace ceSev.Controllers
             }
         }
 
-        private List<StockItem> GetKosdaqData()
+        private List<StockItem> GetKoreaData(string pKind)
         {
             using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
             {
@@ -196,6 +204,8 @@ namespace ceSev.Controllers
 
                 sb.Append("FROM KOREA_INFO ");
                 sb.Append("WHERE 1=1 ");
+                sb.Append("AND KIND='" + pKind + "' ");
+
                 sb.Append("ORDER BY TIME ASC ");
 
                 //if ((!string.IsNullOrEmpty(pId)) && (pId != "전체"))

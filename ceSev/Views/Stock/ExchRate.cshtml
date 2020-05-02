@@ -2,36 +2,72 @@
     ViewBag.Title = "Home Page(CeSev v1.1)";
 }
 
-    <div class="jumbotron">
-        <h1>환율</h1>
-        @*<button onclick="GetInfo()">경제지표 받아오기</button>*@        
-    </div>
+<script src="~/js/echarts-all.js"></script>
+
+<style>
+
+    #divChart {
+        height: 600px;
+    }
+</style>
+
+<div class="jumbotron">
+
+    <h3>환율</h3>
+    <div id="divChart"></div>
+
+</div>
 
 
 <script>
 
-    function test() {
-        alert('dd');
+    $(document).ready(function () {
+
+        InitChart();
+        
+    });
+
+
+
+    function InitChart() {
+
+        var chart = echarts.init(document.getElementById('divChart'));
+        var url = '@Url.Action("GetExchageData", "Stock")';
+
+        $.post(url, {}, function (pData) {
+
+            var xAxisData = [];
+            var valData = [];
+
+            $.each(pData, function (index, item) {
+
+                if (item.TIME != null) {
+                    xAxisData.push(item.TIME);
+                    valData.push(item.VALUE)
+                };
+            });
+
+            chart.setOption({
+
+                tooltip: {
+                    trigger: 'axis'
+                },
+
+                xAxis: {
+                    type: 'category',
+                    data: xAxisData
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: valData,
+                    type: 'line'
+                    //type: 'bar'
+                }]
+            });
+        });
     }
-
-    function GetInfo() {
-
-        var url = '@Url.Action("WorkSchedule", "Home")';
-        $.post(url, {}, function (data) {            
-            //alert('@ViewBag.Message');
-            alert(data.Response);
-        });        
-    } 
-
-    function GetInfo2() {
-
-        var url = '@Url.Action("WorkSchedule2", "Home")';
-        $.post(url, {}, function (data) {            
-            //alert('@ViewBag.Message');
-            alert(data.Response);
-        });        
-    }
-
 
 
 </script>

@@ -68,6 +68,17 @@ namespace ceSev.Controllers
             return Json(new { Response = strMsg }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetExchange()
+        {
+            TaskWork taskwork = new TaskWork();
+            taskwork.CreteExchangeData();
+
+            string strMsg = "Complete GetExchange!!";
+
+            //return View();
+            return Json(new { Response = strMsg }, JsonRequestBehavior.AllowGet);
+        }
+
         //private List<EconomicIdxItem> GetData()
         public JsonResult GetInfo()
         {

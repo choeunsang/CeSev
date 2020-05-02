@@ -47,7 +47,13 @@
 
     function GetExchange() {
 
-        alert('기능 준비중');
+        //alert('기능 준비중');
+
+        var url = '@Url.Action("GetExchange", "Home")';
+        $.post(url, {}, function (data) {
+            //alert('@ViewBag.Message');
+            alert(data.Response);
+        });
     }
 
 

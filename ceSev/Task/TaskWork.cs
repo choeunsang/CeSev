@@ -334,7 +334,7 @@ namespace ceSev.Task
 
 
             //var newData = GetStockData();            
-            var newData = GetKoreaData("KOSDAQ");
+            var newData = GetKoreaData("KOSDAQ", "064Y001", "0089000");
 
             if (newData == null)
             {
@@ -356,7 +356,67 @@ namespace ceSev.Task
                 //CLEAR - KOREA_INFO
                 sb = new StringBuilder();
 
-                sb.Append("DELETE FROM KOREA_INFO  ");
+                //sb.Append("DELETE FROM KOREA_INFO  ");
+                sb.Append("DELETE FROM KOREA_INFO WHERE KIND = 'KOSDAQ' ");
+
+                cmd = new SqlCommand(sb.ToString(), connection);
+                cmd.ExecuteNonQuery();
+
+                //INSERT
+                foreach (var item in newData)
+                {
+                    sb = new StringBuilder();
+
+                    sb.Append("INSERT INTO KOREA_INFO  ");
+                    sb.Append("(  ");
+                    sb.Append("KIND  ");
+                    sb.Append(",TIME  ");
+                    sb.Append(",VALUE  ");
+                    sb.Append(",CREATE_DATE  ");
+                    sb.Append(")  ");
+                    sb.Append("VALUES ");
+                    sb.Append("(  ");
+                    sb.Append("'" + item.KIND + "',");
+                    sb.Append("'" + item.TIME + "', ");
+                    sb.Append("'" + item.VALUE + "', ");
+                    sb.Append("'" + item.CREATE_DATE + "' ");
+                    sb.Append(")  ");
+
+                    sql = sb.ToString();
+
+                    cmd = new SqlCommand(sql, connection);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        //
+        public void CreteExchangeData()
+        {           
+            var newData = GetKoreaData("EXCHANGE", "036Y003", "0000003");
+
+            if (newData == null)
+            {
+                return;
+            }
+
+            //CLEAR - STOCK_IDX
+
+            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
+            {
+                Console.WriteLine("\nQuery data example:");
+                Console.WriteLine("=========================================\n");
+
+                connection.Open();
+                StringBuilder sb = new StringBuilder();
+                SqlCommand cmd;
+                String sql = sb.ToString();
+
+                //CLEAR - KOREA_INFO
+                sb = new StringBuilder();
+
+                //sb.Append("DELETE FROM KOREA_INFO ");
+                sb.Append("DELETE FROM KOREA_INFO WHERE KIND = 'EXCHANGE' ");
 
                 cmd = new SqlCommand(sb.ToString(), connection);
                 cmd.ExecuteNonQuery();
@@ -442,7 +502,7 @@ namespace ceSev.Task
             return items;
         }
 
-        public List<StockItem> GetKoreaData(string pKind)
+        public List<StockItem> GetKoreaData(string pKind, string pCode01, string pCode02)
         {
             List<StockItem> items = new List<StockItem>();
 
@@ -462,10 +522,14 @@ namespace ceSev.Task
             //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/20190101/20200421/0089000/";
 
 
+
+
             string fromDt = System.DateTime.Today.AddYears(-3).ToShortDateString().Replace("-", "");
             string toDt = System.DateTime.Today.ToShortDateString().Replace("-", "");
 
-            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/" + fromDt + "/" + toDt +  "/0089000/";
+            //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/" + fromDt + "/" + toDt +  "/0089000/";
+            //String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/064Y001/DD/" + fromDt + "/" + toDt + "/" + pCode  + "/";
+            String strUrl = "http://ecos.bok.or.kr/api/StatisticSearch/CSYPZ37CMH7K4J9XVALS/xml/kr/1/1000/" + pCode01 + "/DD/" + fromDt + "/" + toDt + "/" + pCode02 + "/";
 
             WebRequest request = HttpWebRequest.Create(strUrl);
             WebResponse response = request.GetResponse();
